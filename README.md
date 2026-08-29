@@ -8,15 +8,15 @@
 
 ```mermaid
 flowchart TD
-    Req["👷 Requester (ผู้แจ้งซ่อม)\nสแกน QR Tag / แจ้งเครื่องจักรเสีย"] -->|1. OPEN\n(WorkOrderMustLinkToValidAsset)| API[".NET 10 CMMS API"]
-    API --> Lead["👨‍💼 Maintenance Lead (หัวหน้าช่าง)\nเห็นงานในบอร์ดจ่ายงาน"]
-    Lead -->|2. OPEN -> ASSIGNED\nWorkOrders.Assign (ASSIGN_TECH)| CoravelWatchdog["⏱️ Coravel SLA Watchdog\nเริ่มนับถอยหลัง SLA 4 ชั่วโมง"]
-    Lead --> Tech["🔧 Technician (ช่างซ่อม)\nรับงานผ่าน Mobile PWA"]
-    Tech -->|3. ASSIGNED -> IN_PROGRESS\nWorkOrders.Start (TECH_START)| Repairing["🛠️ เข้าทำการซ่อมบำรุงหน้างาน\n(เครื่องจักรเปลี่ยนสถานะเป็น UnderMaintenance)"]
-    Repairing --> CompleteStep["📸 ถ่ายรูปหลังซ่อม (After Photo)\n+ ระบุอะไหล่ที่ใช้"]
-    CompleteStep -->|4. IN_PROGRESS -> RESOLVED\nWorkOrders.Complete (COMPLETE_REPAIR)| Validation{"🔍 ตรวจสอบ Invariant\nAfterPhotoMandatoryForResolution"}
-    Validation -->|มีรูปถ่าย After Photo| Success["✅ ปิดงานสำเร็จ\n1. ตัดสต็อกอะไหล่ (Stock.DeductParts)\n2. คำนวณค่าแรง+ค่าอะไหล่ (Cost.CalculateTotal)\n3. คืนสถานะเครื่องจักรเป็น Operational"]
-    Validation -->|ไม่มีรูปถ่าย| Reject["❌ ไม่อนุญาตให้ปิดงาน (Reject)"]
+    Req["Requester (ผู้แจ้งซ่อม)<br/>สแกน QR Tag แจ้งเครื่องจักรเสีย"] -->|"1. Create Work Order (Status: OPEN)"| API[".NET 10 CMMS API"]
+    API --> Lead["Maintenance Lead (หัวหน้าช่าง)<br/>เห็นงานในบอร์ดจ่ายงาน"]
+    Lead -->|"2. Assign Tech (OPEN to ASSIGNED)"| CoravelWatchdog["Coravel SLA Watchdog<br/>เริ่มนับถอยหลัง SLA 4 ชั่วโมง"]
+    Lead --> Tech["Technician (ช่างซ่อม)<br/>รับงานผ่าน Mobile PWA"]
+    Tech -->|"3. Tech Start (ASSIGNED to IN_PROGRESS)"| Repairing["เข้าทำการซ่อมบำรุงหน้างาน<br/>เครื่องจักรเป็น UnderMaintenance"]
+    Repairing --> CompleteStep["ถ่ายรูปหลังซ่อม (After Photo)<br/>และระบุอะไหล่ที่ใช้"]
+    CompleteStep -->|"4. Complete Repair (IN_PROGRESS to RESOLVED)"| Validation{"Validation Invariant<br/>AfterPhotoMandatoryForResolution"}
+    Validation -->|"มีรูปถ่าย After Photo"| Success["ปิดงานสำเร็จ<br/>1. ตัดสต็อกอะไหล่ Stock.DeductParts<br/>2. คำนวณค่าแรงและค่าอะไหล่ Cost.CalculateTotal<br/>3. คืนสถานะเครื่องจักรเป็น Operational"]
+    Validation -->|"ไม่มีรูปถ่าย"| Reject["Reject (ไม่อนุญาตให้ปิดงาน)"]
 ```
 
 ### รายละเอียดขั้นตอนการเปลี่ยนสถานะ (State Transitions):
