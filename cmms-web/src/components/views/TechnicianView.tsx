@@ -1,5 +1,6 @@
-import { showSuccess, showError, showInfo, showWarning, showยืนยัน } from '@/lib/swal';
 'use client';
+
+import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
 
 import React, { useState, useEffect } from 'react';
 import { WorkOrder, SparePart } from '@/lib/types';
@@ -359,5 +360,6 @@ export default function TechnicianView() {
     </div>
   );
 }
+
 
 

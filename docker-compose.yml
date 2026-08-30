@@ -30,7 +30,8 @@ services:
       - "5020:5020"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5020
+      - ASPNETCORE_URLS=http://0.0.0.0:5020
+      - ASPNETCORE_HTTP_PORTS=5020
       - ConnectionStrings__PostgresConnection=Host=cmms-db;Port=5432;Database=cmms_db;Username=postgres;Password=postgres
     depends_on:
       cmms-db:
@@ -60,6 +61,7 @@ volumes:
 networks:
   cmms-network:
     driver: bridge
+
 
 
 
