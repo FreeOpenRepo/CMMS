@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - cmms_postgres_data:/var/lib/postgresql/data
+      - cmms_postgres_data:/var/lib/postgresql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "cmms_db"]
@@ -60,5 +60,6 @@ volumes:
 networks:
   cmms-network:
     driver: bridge
+
 
 
