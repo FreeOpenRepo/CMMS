@@ -30,6 +30,82 @@ flowchart TD
 
 ---
 
+## 🗄️ Database Design & Entity Relationships (PostgreSQL 18)
+
+### 1. Entity-Relationship Diagram (ER Diagram)
+
+```mermaid
+erDiagram
+    Assets ||--o{ WorkOrders : "has maintenance repairs"
+    Assets ||--o{ MaintenancePlans : "has recurring PM plans"
+    WorkOrders ||--o{ WorkOrderParts : "uses spare parts"
+
+    Assets {
+        int Id PK
+        string AssetCode UK
+        string Name
+        string Category
+        string Location
+        string QrCodeBase64
+        string Status
+        timestamp CreatedAt
+    }
+
+    WorkOrders {
+        int Id PK
+        string WorkOrderCode UK
+        int AssetId FK
+        string Title
+        string Description
+        string Priority
+        string Status
+        string AssignedTechnician
+        string BeforePhotoBase64
+        string AfterPhotoBase64
+        numeric LaborHours
+        numeric TotalCost
+        timestamp ScheduledDate
+        timestamp CompletedAt
+        timestamp CreatedAt
+    }
+
+    MaintenancePlans {
+        int Id PK
+        string PlanCode UK
+        int AssetId FK
+        string CronExpression
+        int IntervalDays
+        string Title
+        boolean IsActive
+        timestamp LastTriggeredAt
+    }
+
+    WorkOrderParts {
+        int Id PK
+        int WorkOrderId FK
+        string PartSku
+        string PartName
+        int QuantityUsed
+        numeric UnitCost
+    }
+```
+
+### 2. รายละเอียดตารางและความสัมพันธ์ (Schema & Relationships)
+- **`Assets` (ทะเบียนเครื่องจักรและอุปกรณ์)**:
+  - เก็บข้อมูลเครื่องจักร รหัสสินทรัพย์ (AssetCode), สถานะการทำงาน (`OPERATIONAL`, `UNDER_MAINTENANCE`, `DECOMMISSIONED`), และรูปภาพ Base64 ของ QR Code ติดหน้าเครื่องจักร
+- **`WorkOrders` (ใบสั่งซ่อมบำรุง)**:
+  - Foreign Key: `AssetId` ➔ `Assets(Id)` (บังคับตาม Invariant `WorkOrderMustLinkToValidAsset`)
+  - เก็บสถานะ (`OPEN`, `ASSIGNED`, `IN_PROGRESS`, `RESOLVED`, `CANCELLED`), ลำดับความสำคัญ (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`), รูปถ่ายก่อนซ่อม/หลังซ่อม และชั่วโมงแรงงาน
+  - ตารางนี้ทำงานร่วมกับ Invariant `AfterPhotoMandatoryForResolution` ที่ต้องมี `AfterPhotoBase64` ก่อนจะอัปเดตเป็น `RESOLVED`
+- **`MaintenancePlans` (แผนซ่อมบำรุงเชิงป้องกัน - PM Schedule)**:
+  - Foreign Key: `AssetId` ➔ `Assets(Id)`
+  - เก็บรูปแบบความถี่รอบเวลาด้วย Cron Expression หรือจำนวนวัน (IntervalDays) สำหรับให้ Coravel Scheduler ประมวลผลสร้าง WorkOrder ล่วงหน้าอัตโนมัติ
+- **`WorkOrderParts` (รายการอะไหล่ที่ใช้ในงานซ่อม)**:
+  - Foreign Key: `WorkOrderId` ➔ `WorkOrders(Id)`
+  - บันทึกการตัดสต็อกอะไหล่จริงและต้นทุนค่าซ่อมบำรุงรวม
+
+---
+
 ## 🛡️ กฎเหล็กของระบบ (Domain Invariants)
 
 1. **`WorkOrderMustLinkToValidAsset` (ใบแจ้งซ่อมต้องผูกกับเครื่องจักรที่มีอยู่จริง)**:
@@ -43,6 +119,7 @@ flowchart TD
 
 | ส่วนประกอบ | เทคโนโลยีที่เลือก | เหตุผลที่เลือก | ข้อดีหลัก (Advantages) |
 |---|---|---|---|
+| **Database** | **PostgreSQL 18** | มาตรฐาน RDBMS สำหรับจัดเก็บข้อมูลอุปกรณ์และประวัติการซ่อมบำรุง | มี Auto-Init Script (`db/init.sql`) พร้อมตาราง Assets และ WorkOrders |
 | **Frontend UI (PWA)**| **Next.js 16 + React 19** | ออกแบบเป็น Progressive Web App (PWA) ใช้งานได้ทั้งบนมือถือและแท็บเล็ต | ช่างซ่อมสามารถติดตั้งเป็นแอปบนมือถือ พกพาไปตรวจงานหน้าเครื่องจักรได้สะดวก |
 | **QR Code Scanner** | **html5-qrcode** | สแกน QR Code ผ่านกล้องเว็บแคมหรือกล้องมือถือได้โดยตรง | สแกนติดเร็วแม้ในสภาพแสงน้อยหน้าโรงงาน |
 | **Image Optimizer** | **browser-image-compression** | บีบอัดรูปถ่ายความละเอียดสูงในเบราว์เซอร์ก่อนส่งขึ้นเซิร์ฟเวอร์ | ลดขนาดรูปจาก 10MB เหลือไม่เกิน 500KB ช่วยประหยัดพื้นที่จัดเก็บและอัปโหลดได้เร็วแม้เน็ตช้า |
@@ -54,16 +131,22 @@ flowchart TD
 
 ## 🚀 วิธีการรันระบบ (Quick Start)
 
-### 1. รัน Backend API:
-```powershell
-cd cmms-api
-dotnet run
+### ตัวเลือกที่ 1: รันด้วย Docker Compose (แนะนำ)
+```bash
+docker compose up --build -d
 ```
-> API พร้อมทำงานที่: `http://localhost:5020`
+> ระบบจะรัน **PostgreSQL 18** (`:5432`), **.NET 10 API** (`:5020`), และ **Next.js 16 Web** (`:3002`) พร้อม Seed เครื่องจักรและแผนซ่อมบำรุงให้ใช้งานได้ทันที
 
-### 2. รัน Frontend Web:
-```powershell
-cd cmms-web
-bun run dev
-```
-> เข้าใช้งานได้ที่: `http://localhost:3002`
+### ตัวเลือกที่ 2: รันแบบแยก Service (Manual)
+1. **รัน Backend API**:
+   ```powershell
+   cd cmms-api
+   dotnet run
+   ```
+   > API พร้อมทำงานที่: `http://localhost:5020`
+2. **รัน Frontend Web**:
+   ```powershell
+   cd cmms-web
+   bun run dev
+   ```
+   > เข้าใช้งานได้ที่: `http://localhost:3002`
