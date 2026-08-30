@@ -45,21 +45,36 @@ else
 
 var app = builder.Build();
 
-// Ensure Database is Created & Generate Asset QR Codes
-using (var scope = app.Services.CreateScope())
+// Ensure Database is Created asynchronously without blocking Kestrel startup
+app.Lifetime.ApplicationStarted.Register(async () =>
 {
-    var db = scope.ServiceProvider.GetRequiredService<CmmsDbContext>();
-    var qrService = scope.ServiceProvider.GetRequiredService<IAssetQrService>();
-    db.Database.EnsureCreated();
-
-    // Populate QR codes for seeded assets
-    var assets = db.Assets.ToList();
-    foreach (var asset in assets)
+    for (int i = 0; i < 5; i++)
     {
-        if (string.IsNullOrEmpty(asset.QrCodeBase64))
+        try
         {
-            asset.QrCodeBase64 = qrService.GenerateAssetQrCodeBase64(asset.Id, asset.AssetTag, asset.Name);
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<CmmsDbContext>();
+            var qrService = scope.ServiceProvider.GetRequiredService<IAssetQrService>();
+            await db.Database.EnsureCreatedAsync();
+            var assets = await db.Assets.ToListAsync();
+            foreach (var asset in assets)
+            {
+                if (string.IsNullOrEmpty(asset.QrCodeBase64))
+                {
+                    asset.QrCodeBase64 = qrService.GenerateQrCodeBase64(asset.QrCodePayload);
+                }
+            }
+            await db.SaveChangesAsync();
+            app.Logger.LogInformation("CMMS Database connected and verified successfully.");
+            break;
         }
+        catch (Exception ex)
+        {
+            app.Logger.LogWarning("CMMS DB initialization attempt {Attempt} failed: {Message}. Retrying...", i + 1, ex.Message);
+            await Task.Delay(2000);
+        }
+    }
+});
     }
     db.SaveChanges();
 }
@@ -253,4 +268,5 @@ app.Run();
 
 public record AssignDto(int TechnicianId);
 public record RestockDto(int Quantity);
+
 
