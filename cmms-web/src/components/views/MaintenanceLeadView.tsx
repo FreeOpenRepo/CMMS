@@ -1,4 +1,4 @@
-import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
+import { showSuccess, showError, showInfo, showWarning, showยืนยัน } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -59,7 +59,7 @@ export default function MaintenanceLeadView() {
     }
   }
 
-  function getSlaStatus(wo: WorkOrder): { text: string; color: string; bg: string; isBreached: boolean } {
+  function getSlaสถานะ(wo: WorkOrder): { text: string; color: string; bg: string; isBreached: boolean } {
     if (wo.status === 'RESOLVED' || wo.status === 'CLOSED') {
       return { text: 'Resolved', color: '#10b981', bg: 'rgba(16,185,129,0.15)', isBreached: false };
     }
@@ -134,10 +134,10 @@ export default function MaintenanceLeadView() {
       </div>
 
       {activeTab === 'BOARD' ? (
-        /* Work Orders Grid */
+        /* ใบสั่งงานซ่อมบำรุง (Work Orders) Grid */
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
           {workOrders.map(wo => {
-            const sla = getSlaStatus(wo);
+            const sla = getSlaสถานะ(wo);
             const isOpen = wo.status === 'OPEN';
             const isAssigned = wo.status === 'ASSIGNED';
             const isInProgress = wo.status === 'IN_PROGRESS';
@@ -210,7 +210,7 @@ export default function MaintenanceLeadView() {
 
                   {isResolved && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--accent-emerald)', fontWeight: 700 }}>
-                      <span>Total Maintenance Cost:</span>
+                      <span>ยอดรวม Maintenance Cost:</span>
                       <span className="font-mono">{wo.totalCost.toLocaleString()} THB</span>
                     </div>
                   )}
@@ -256,7 +256,7 @@ export default function MaintenanceLeadView() {
                   <th style={{ padding: '12px 16px' }}>Category</th>
                   <th style={{ padding: '12px 16px' }}>Stock on Hand</th>
                   <th style={{ padding: '12px 16px' }}>Unit Cost</th>
-                  <th style={{ padding: '12px 16px' }}>Status</th>
+                  <th style={{ padding: '12px 16px' }}>สถานะ</th>
                   <th style={{ padding: '12px 16px', textAlign: 'right' }}>Quick Restock</th>
                 </tr>
               </thead>
@@ -352,7 +352,7 @@ export default function MaintenanceLeadView() {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button onClick={() => setSelectedWoForAssign(null)} className="btn-secondary">Cancel</button>
+              <button onClick={() => setSelectedWoForAssign(null)} className="btn-secondary">ยกเลิก</button>
               <button onClick={handleAssignSubmit} disabled={isSubmitting || !selectedTechId} className="btn-primary">
                 {isSubmitting ? 'Dispatching...' : 'Assign & Start 4H SLA Watchdog'}
               </button>
@@ -363,4 +363,5 @@ export default function MaintenanceLeadView() {
     </div>
   );
 }
+
 

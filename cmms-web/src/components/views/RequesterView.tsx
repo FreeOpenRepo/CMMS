@@ -1,4 +1,4 @@
-import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
+import { showSuccess, showError, showInfo, showWarning, showยืนยัน } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -246,11 +246,11 @@ export default function RequesterView() {
           </form>
         </div>
 
-        {/* Live Work Orders Tracker */}
+        {/* Live ใบสั่งงานซ่อมบำรุง (Work Orders) Tracker */}
         <div>
           <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Clock style={{ width: 20, height: 20, color: 'var(--accent-cyan)' }} />
-            Active Plant Work Orders ({workOrders.length})
+            Active Plant ใบสั่งงานซ่อมบำรุง (Work Orders) ({workOrders.length})
           </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -337,4 +337,5 @@ export default function RequesterView() {
     </div>
   );
 }
+
 

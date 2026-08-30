@@ -62,12 +62,12 @@ export default function PlantDashboardView() {
           </div>
 
           <div className="glass-panel" style={{ padding: '20px', borderLeft: '4px solid var(--accent-cyan)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Active Work Orders</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Active ใบสั่งงานซ่อมบำรุง (Work Orders)</div>
             <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-cyan)' }} className="font-mono">
               {stats.activeWos}
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              {stats.resolvedWos} Total Resolved to date
+              {stats.resolvedWos} ยอดรวม Resolved to date
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export default function PlantDashboardView() {
           </div>
 
           <div className="glass-panel" style={{ padding: '20px', borderLeft: '4px solid var(--accent-amber)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Total Maintenance Cost</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>ยอดรวม Maintenance Cost</div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent-amber)' }} className="font-mono">
               {stats.totalMaintenanceCost.toLocaleString()} ฿
             </div>
@@ -188,3 +188,4 @@ export default function PlantDashboardView() {
     </div>
   );
 }
+

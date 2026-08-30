@@ -1,4 +1,4 @@
-import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
+import { showSuccess, showError, showInfo, showWarning, showยืนยัน } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -171,7 +171,7 @@ export default function TechnicianView() {
                 </div>
               )}
 
-              {/* Actions */}
+              {/* การดำเนินการ */}
               <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
                 {isAssigned && (
                   <button
@@ -179,7 +179,7 @@ export default function TechnicianView() {
                     className="btn-primary"
                     style={{ width: '100%', padding: '12px', fontSize: '0.95rem' }}
                   >
-                    <Play style={{ width: 16, height: 16 }} /> Start Repair (TECH_START)
+                    <Play style={{ width: 16, height: 16 }} /> เริ่มดำเนินการซ่อม (TECH_START)
                   </button>
                 )}
 
@@ -196,7 +196,7 @@ export default function TechnicianView() {
                 {isResolved && (
                   <div style={{ width: '100%', padding: '10px', background: 'rgba(16,185,129,0.1)', borderRadius: '8px', fontSize: '0.85rem', color: 'var(--accent-emerald)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <CheckCircle2 style={{ width: 16, height: 16 }} />
-                    <span>Repair Completed • Total Cost: <strong>{wo.totalCost.toLocaleString()} THB</strong></span>
+                    <span>Repair Completed • ยอดรวม Cost: <strong>{wo.totalCost.toLocaleString()} THB</strong></span>
                   </div>
                 )}
               </div>
@@ -343,14 +343,14 @@ export default function TechnicianView() {
             </div>
 
             <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border-glass)', display: 'flex', gap: '10px', justifyContent: 'flex-end', background: 'rgba(0,0,0,0.3)' }}>
-              <button onClick={() => setActiveModalWo(null)} className="btn-secondary">Cancel</button>
+              <button onClick={() => setActiveModalWo(null)} className="btn-secondary">ยกเลิก</button>
               <button
                 onClick={handleCompleteSubmit}
                 disabled={isSubmitting}
                 className="btn-success"
                 style={{ padding: '12px 20px', fontSize: '0.95rem' }}
               >
-                {isSubmitting ? 'Validating & Resolving...' : 'Complete Work Order & Deduct Parts'}
+                {isSubmitting ? 'Validating & Resolving...' : 'ปิดงานซ่อมบำรุง & Deduct Parts'}
               </button>
             </div>
           </div>
@@ -359,4 +359,5 @@ export default function TechnicianView() {
     </div>
   );
 }
+
 

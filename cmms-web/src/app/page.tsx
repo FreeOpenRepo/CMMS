@@ -76,10 +76,10 @@ export default function Home() {
             gap: '4px'
           }}>
             {[
-              { role: 'Requester' as const, label: 'Requester', icon: AlertOctagon, color: 'var(--accent-cyan)' },
-              { role: 'MaintenanceLead' as const, label: 'Lead Dispatch', icon: ShieldAlert, color: 'var(--accent-amber)' },
-              { role: 'Technician' as const, label: 'Tech Mobile', icon: Wrench, color: 'var(--accent-emerald)' },
-              { role: 'CoravelScheduler' as const, label: 'Plant KPIs', icon: Activity, color: 'var(--accent-orange)' },
+              { role: 'Requester' as const, label: 'ผู้แจ้งซ่อม (Requester)', icon: AlertOctagon, color: 'var(--accent-cyan)' },
+              { role: 'MaintenanceLead' as const, label: 'หัวหน้าช่างจ่ายงาน (Lead Dispatch)', icon: ShieldAlert, color: 'var(--accent-amber)' },
+              { role: 'Technician' as const, label: 'ช่างหน้างาน (Tech Mobile)', icon: Wrench, color: 'var(--accent-emerald)' },
+              { role: 'CoravelScheduler' as const, label: 'แดชบอร์ดโรงงาน (Plant KPIs)', icon: Activity, color: 'var(--accent-orange)' },
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeRole === tab.role;
@@ -110,7 +110,7 @@ export default function Home() {
             })}
           </div>
 
-          {/* Status Indicator */}
+          {/* สถานะ Indicator */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -124,7 +124,7 @@ export default function Home() {
             color: isApiOnline ? '#34d399' : '#fca5a5'
           }}>
             {isApiOnline ? <Wifi style={{ width: 12, height: 12 }} /> : <WifiOff style={{ width: 12, height: 12 }} />}
-            <span>{isApiOnline ? 'CMMS API Active' : 'Connecting API :5020...'}</span>
+            <span>{isApiOnline ? 'CMMS API ออนไลน์' : 'Connecting API :5020...'}</span>
           </div>
         </div>
       </header>
@@ -139,3 +139,5 @@ export default function Home() {
     </main>
   );
 }
+
+
