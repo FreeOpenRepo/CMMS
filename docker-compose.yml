@@ -1,0 +1,33 @@
+services:
+  cmms-api:
+    build:
+      context: ./cmms-api
+      dockerfile: Dockerfile
+    container_name: cmms-api
+    ports:
+      - "5020:5020"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5020
+    restart: unless-stopped
+    networks:
+      - cmms-network
+
+  cmms-web:
+    build:
+      context: ./cmms-web
+      dockerfile: Dockerfile
+    container_name: cmms-web
+    ports:
+      - "3002:3002"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5020
+    depends_on:
+      - cmms-api
+    restart: unless-stopped
+    networks:
+      - cmms-network
+
+networks:
+  cmms-network:
+    driver: bridge
