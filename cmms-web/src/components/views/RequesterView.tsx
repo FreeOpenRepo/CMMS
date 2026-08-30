@@ -1,3 +1,4 @@
+import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -66,7 +67,7 @@ export default function RequesterView() {
       await loadData();
       confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
     } catch (err: any) {
-      alert('Error creating work order: ' + err.message);
+      showInfo('แจ้งเตือนระบบ', 'Error creating work order: ' + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -336,3 +337,4 @@ export default function RequesterView() {
     </div>
   );
 }
+

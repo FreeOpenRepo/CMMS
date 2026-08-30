@@ -1,3 +1,4 @@
+import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -37,7 +38,7 @@ export default function TechnicianView() {
       await loadData();
       confetti({ particleCount: 40, spread: 50 });
     } catch (err: any) {
-      alert('Failed to start repair: ' + err.message);
+      showError('ข้อผิดพลาด', Failed to start repair: ' + err.message);
     }
   }
 
@@ -358,3 +359,4 @@ export default function TechnicianView() {
     </div>
   );
 }
+

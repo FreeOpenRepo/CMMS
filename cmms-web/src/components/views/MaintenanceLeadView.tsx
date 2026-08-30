@@ -1,3 +1,4 @@
+import { showSuccess, showError, showInfo, showWarning, showConfirm } from '@/lib/swal';
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -43,7 +44,7 @@ export default function MaintenanceLeadView() {
       await loadData();
       confetti({ particleCount: 50, spread: 60 });
     } catch (err: any) {
-      alert('Assignment failed: ' + err.message);
+      showInfo('แจ้งเตือนระบบ', 'Assignment failed: ' + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -54,7 +55,7 @@ export default function MaintenanceLeadView() {
       await restockSparePart(partId, qty);
       await loadData();
     } catch (err: any) {
-      alert('Restock failed: ' + err.message);
+      showInfo('แจ้งเตือนระบบ', 'Restock failed: ' + err.message);
     }
   }
 
@@ -362,3 +363,4 @@ export default function MaintenanceLeadView() {
     </div>
   );
 }
+
