@@ -6,6 +6,7 @@ using Coravel;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:5020");
 
 // Add services
 builder.Services.AddOpenApi();
@@ -252,3 +253,4 @@ app.Run();
 
 public record AssignDto(int TechnicianId);
 public record RestockDto(int Quantity);
+
